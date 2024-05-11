@@ -17,33 +17,49 @@ export const counterSlice = createAppSlice({
   name: "counter",
   initialState,
   reducers: create => ({
-    increment: create.reducer(state => {
-      state.count += 1
+    increment: create.reducer(draft => {
+      draft.count += 1
     }),
     decrement: create.reducer(draft => {
       draft.count -= 1
     }),
     incrementByAmount: create.reducer(
-      (state, action: PayloadAction<number>) => {
-        state.count += action.payload
+      (draft, action: PayloadAction<number>) => {
+        draft.count += action.payload
       },
     ),
     incrementAsync: create.asyncThunk(
       async (amount: number) => {
         const response = await fetchCount(amount)
-        // The value we return becomes the `fulfilled` action payload
         return response.data
       },
       {
-        pending: state => {
-          state.status = "loading"
+        pending: draft => {
+          draft.status = "loading"
         },
-        fulfilled: (state, action) => {
-          state.status = "idle"
-          state.count += action.payload
+        fulfilled: (draft, action) => {
+          draft.status = "idle"
+          draft.count += action.payload
         },
-        rejected: state => {
-          state.status = "failed"
+        rejected: draft => {
+          draft.status = "failed"
+        },
+      },
+    ),
+    incrementAsyncReject: create.asyncThunk(
+      async (amount: number) => {
+        throw new Error('error')
+      },
+      {
+        pending: draft => {
+          draft.status = "loading"
+        },
+        fulfilled: (draft, action) => {
+          draft.status = "idle"
+          draft.count += action.payload
+        },
+        rejected: draft => {
+          draft.status = "failed"
         },
       },
     ),
