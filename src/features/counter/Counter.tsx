@@ -3,30 +3,26 @@ import { useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import styles from "./Counter.module.css"
 import {
-  decrement,
-  increment,
-  incrementAsync,
-  incrementByAmount,
   incrementIfOdd,
-  selectCount,
-  selectStatus,
+  counterSlice
 } from "./counterSlice"
 
 export const Counter = () => {
   const dispatch = useAppDispatch()
-  const count = useAppSelector(selectCount)
-  const status = useAppSelector(selectStatus)
+  const count = useAppSelector(counterSlice.selectors.selectCount)
+  const status = useAppSelector(counterSlice.selectors.selectStatus)
   const [incrementAmount, setIncrementAmount] = useState("2")
 
   const incrementValue = Number(incrementAmount) || 0
 
   return (
     <div>
+      <h1>Status : {status}</h1>
       <div className={styles.row}>
         <button
           className={styles.button}
           aria-label="Decrement value"
-          onClick={() => dispatch(decrement())}
+          onClick={() => dispatch(counterSlice.actions.decrement())}
         >
           -
         </button>
@@ -36,7 +32,7 @@ export const Counter = () => {
         <button
           className={styles.button}
           aria-label="Increment value"
-          onClick={() => dispatch(increment())}
+          onClick={() => dispatch(counterSlice.actions.increment())}
         >
           +
         </button>
@@ -53,14 +49,14 @@ export const Counter = () => {
         />
         <button
           className={styles.button}
-          onClick={() => dispatch(incrementByAmount(incrementValue))}
+          onClick={() => dispatch(counterSlice.actions.incrementByAmount(incrementValue))}
         >
           Add Amount
         </button>
         <button
           className={styles.asyncButton}
           disabled={status !== "idle"}
-          onClick={() => dispatch(incrementAsync(incrementValue))}
+          onClick={() => dispatch(counterSlice.actions.incrementAsync(incrementValue))}
         >
           Add Async
         </button>
